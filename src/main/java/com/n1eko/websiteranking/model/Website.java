@@ -9,16 +9,19 @@ public class Website {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "id")
     private Category category;
 
+    @Column(nullable = false)
     private int votes;
 
 }

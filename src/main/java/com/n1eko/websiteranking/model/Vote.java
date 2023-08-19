@@ -11,14 +11,16 @@ public class Vote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private VoteType voteType;
 
+    @Column(nullable = false)
     private String ip;
 
     @ManyToOne
-    @JoinColumn(name = "id")
     private Website website;
 
+    @Column(nullable = false)
     private LocalDateTime time;
 }
