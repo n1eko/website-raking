@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+@Entity
 public class Vote {
 
     @Id
@@ -11,12 +12,12 @@ public class Vote {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private String voteType;
+    private VoteType voteType;
 
     private String ip;
 
     @ManyToOne
-    @JoinColumn(name = "website_id")
+    @JoinColumn(name = "id")
     private Website website;
 
     private LocalDateTime time;

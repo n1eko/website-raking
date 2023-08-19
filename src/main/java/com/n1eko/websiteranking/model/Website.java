@@ -1,9 +1,8 @@
 package com.n1eko.websiteranking.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@Entity
 public class Website {
 
     @Id
@@ -15,6 +14,10 @@ public class Website {
     private String description;
 
     private String url;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private Category category;
 
     private int votes;
 
