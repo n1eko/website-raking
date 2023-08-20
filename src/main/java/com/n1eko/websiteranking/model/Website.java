@@ -2,10 +2,12 @@ package com.n1eko.websiteranking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Data
+@Builder
 public class Website {
 
     @Id
