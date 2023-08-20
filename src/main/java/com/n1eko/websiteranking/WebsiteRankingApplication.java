@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class WebsiteRankingApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WebsiteRankingApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(WebsiteRankingApplication.class, args);
+    }
 
 }

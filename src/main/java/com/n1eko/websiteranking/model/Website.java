@@ -1,8 +1,11 @@
 package com.n1eko.websiteranking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 public class Website {
 
     @Id
@@ -15,9 +18,13 @@ public class Website {
     private String description;
 
     @Column(nullable = false)
-    private String url;
+    private String baseUrl;
 
-    @ManyToOne
+    @Column(nullable = false)
+    private String fullUrl;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 
     @Column(nullable = false)
