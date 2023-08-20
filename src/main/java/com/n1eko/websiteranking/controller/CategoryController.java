@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
+@CrossOrigin(origins = "${security.cors.allowed-origin}", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1")
 public class CategoryController {
