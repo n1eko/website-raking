@@ -1,12 +1,14 @@
 package com.n1eko.websiteranking.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Builder
 public class Vote {
 
     @Id
