@@ -1,5 +1,6 @@
 package com.n1eko.websiteranking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +28,9 @@ public class Category {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private List<Website> websites;
+
+    @Column(unique=true)
+    @JsonIgnore
+    private Integer priority;
 
 }
