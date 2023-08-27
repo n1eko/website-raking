@@ -34,7 +34,6 @@ public class VotingController {
 
     @PostMapping("/vote")
     public ResponseEntity vote(@RequestParam Long websiteId, @RequestParam VoteType voteType, HttpServletRequest request) {
-        debugMethod(request);
         String clientIp = HttpUtils.getClientIpAddr(request);
         if (voteService.countVotesForIpWithinLast24Hours(clientIp) < maxAllowedVotesPerDay) {
             Optional<Website> website = websiteService.findWebsiteById(websiteId);
@@ -57,16 +56,6 @@ public class VotingController {
             }
         } else {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-        }
-    }
-
-    private void debugMethod(HttpServletRequest request){
-        Enumeration<String> headerNames = request.getHeaderNames();
-
-        if (headerNames != null) {
-            while (headerNames.hasMoreElements()) {
-                logger.info("Header: " + request.getHeader(headerNames.nextElement()));
-            }
         }
     }
 
