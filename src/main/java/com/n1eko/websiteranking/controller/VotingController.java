@@ -6,6 +6,7 @@ import com.n1eko.websiteranking.model.VoteType;
 import com.n1eko.websiteranking.model.Website;
 import com.n1eko.websiteranking.service.VoteService;
 import com.n1eko.websiteranking.service.WebsiteService;
+import com.n1eko.websiteranking.utils.HttpUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,12 +31,13 @@ public class VotingController {
 
     @PostMapping("/vote")
     public ResponseEntity vote(@RequestParam Long websiteId, @RequestParam VoteType voteType, HttpServletRequest request) {
-        if (voteService.countVotesForIpWithinLast24Hours(request.getRemoteAddr()) < maxAllowedVotesPerDay) {
+        String clientIp = HttpUtils.getClientIpAddr(request);
+        if (voteService.countVotesForIpWithinLast24Hours(clientIp) < maxAllowedVotesPerDay) {
             Optional<Website> website = websiteService.findWebsiteById(websiteId);
             if (website.isPresent() && voteType != null) {
                 voteService.saveVote(Vote.builder()
                         .voteType(voteType)
-                        .ip(request.getRemoteAddr())
+                        .ip(clientIp)
                         .website(website.get())
                         .time(LocalDateTime.now())
                         .build());
