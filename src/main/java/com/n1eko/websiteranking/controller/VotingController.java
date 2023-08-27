@@ -8,6 +8,8 @@ import com.n1eko.websiteranking.service.VoteService;
 import com.n1eko.websiteranking.service.WebsiteService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,25 +25,32 @@ public class VotingController {
     private VoteService voteService;
     @Autowired
     private WebsiteService websiteService;
+    @Value("${vote.max-allowed-per-day}")
+    private int maxAllowedVotesPerDay;
 
     @PostMapping("/vote")
     public ResponseEntity vote(@RequestParam Long websiteId, @RequestParam VoteType voteType, HttpServletRequest request) {
-        Optional<Website> website = websiteService.findWebsiteById(websiteId);
-        if (website.isPresent() && voteType != null) {
-            voteService.saveVote(Vote.builder()
-                    .voteType(voteType)
-                    .ip(request.getRemoteAddr())
-                    .website(website.get())
-                    .time(LocalDateTime.now())
-                    .build());
-            if (voteType.equals(VoteType.UPVOTE)) {
-                websiteService.upvoteWebsite(website.get().getId());
+        if (voteService.countVotesForIpWithinLast24Hours(request.getRemoteAddr()) < maxAllowedVotesPerDay) {
+            Optional<Website> website = websiteService.findWebsiteById(websiteId);
+            if (website.isPresent() && voteType != null) {
+                voteService.saveVote(Vote.builder()
+                        .voteType(voteType)
+                        .ip(request.getRemoteAddr())
+                        .website(website.get())
+                        .time(LocalDateTime.now())
+                        .build());
+                if (voteType.equals(VoteType.UPVOTE)) {
+                    websiteService.upvoteWebsite(website.get().getId());
+                } else {
+                    websiteService.downvoteWebsite(website.get().getId());
+                }
+                return ResponseEntity.accepted().build();
+
             } else {
-                websiteService.downvoteWebsite(website.get().getId());
+                return ResponseEntity.badRequest().build();
             }
-            return ResponseEntity.accepted().build();
         } else {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
         }
     }
 
