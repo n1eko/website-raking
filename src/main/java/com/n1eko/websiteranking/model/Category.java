@@ -29,7 +29,7 @@ public class Category {
     @JoinColumn(name = "category_id")
     private List<Website> websites;
 
-    @Column(unique=true)
+    @Column(unique = true)
     @JsonIgnore
     private Integer priority;
 

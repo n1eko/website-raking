@@ -32,16 +32,15 @@ import static org.mockito.Mockito.verify;
 @AutoConfigureMockMvc(addFilters = false)
 class VotingControllerTest {
 
+    Website mockWebsite = Website.builder().id(1L).name("WebsiteName").description("WebsiteDescription")
+            .baseUrl("http://test.com/").fullUrl("http://test.com/path").category(null).build();
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private VoteService voteService;
     @MockBean
     private WebsiteService websiteService;
 
-    Website mockWebsite = Website.builder().id(1L).name("WebsiteName").description("WebsiteDescription")
-            .baseUrl("http://test.com/").fullUrl("http://test.com/path").category(null).build();
     @Test
     void vote_non_existent_website() throws Exception {
         Mockito.when(websiteService.findWebsiteById(Mockito.anyLong())).thenReturn(Optional.empty());
@@ -53,13 +52,14 @@ class VotingControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         verify(websiteService, atLeast(1)).findWebsiteById(Mockito.anyLong());
     }
+
     @Test
     void upvote() throws Exception {
 
         Mockito.when(websiteService.findWebsiteById(Mockito.anyLong())).thenReturn(Optional.ofNullable(mockWebsite));
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post(
-                "/api/v1/vote").queryParam("websiteId", "843")
+                        "/api/v1/vote").queryParam("websiteId", "843")
                 .queryParam("voteType", "UPVOTE").accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
@@ -68,6 +68,7 @@ class VotingControllerTest {
         assertEquals(HttpStatus.ACCEPTED.value(), response.getStatus());
         verify(websiteService, atLeast(1)).upvoteWebsite(Mockito.anyLong());
     }
+
     @Test
     void downvote() throws Exception {
 
@@ -83,6 +84,7 @@ class VotingControllerTest {
         assertEquals(HttpStatus.ACCEPTED.value(), response.getStatus());
         verify(websiteService, atLeast(1)).downvoteWebsite(Mockito.anyLong());
     }
+
     @Test
     void reachMaxVotesPerDay() throws Exception {
         Mockito.when(voteService.countVotesForIpWithinLast24Hours(Mockito.anyString())).thenReturn(6);
